@@ -6,6 +6,7 @@ const fs = require("fs")
 const { DisTube } = require("distube")
 const { YtDlpPlugin } = require("@distube/yt-dlp")
 const { VoiceConnectionStatus } = require("@discordjs/voice")
+const { channel } = require("diagnostics_channel")
 // const { Player } = require("discord-player")
 
 dotenv.config()
@@ -73,42 +74,25 @@ client.once("ready", (c) => {
 client.on("interactionCreate", (interaction) => {
     if(!interaction.isCommand()) return;
 
-    const command = client.command.get(interaction.commandName)
+    const command = client.command.get(interaction.commandName);
     try {
-        command.execute(client, interaction)
+        command.execute(client, interaction);
     } catch (error) {
-        interaction.reply({content: "There was an error executing this command.", ephemeral: true})
+        interaction.reply({content: "There was an error executing this command.", ephemeral: true});
     }
 })
 
-
-// client.on("voiceStateUpdate", (interaction, oldState, newState) => {
-//     // console.log(newState)
-//     // console.log(oldState)
-//     const botMember = oldState.guild.members.cache.get(client.user.id);
-//     console.log(botMember)
-//     // if (oldState.channelId !== null && newState.channelId == null){
-//     //     const channel = oldState.channel;
-//     //     if (channel && channel.members.size === 1) {
-//     //         const botMember = channel.members.get(client.user.id);
-//     //         if (botMember) {
-//     //             botMember.voice.disconnect();
-//     //             console.log("Im lonely 😔")
-//     //             interaction.reply({content: "Im lonely in the voice channel 😔, Bye-Bye 🥲"})
-//     //         }
-//     //     }
-//     // }   
-// })
-
-client.on("voiceStateUpdate", (interaction, oldState, newState) => {
+client.on("voiceStateUpdate", (oldState, newState) => {
     const botMember = oldState.guild.members.cache.get(client.user.id);
+    // console.log(botMember)
 
     // Check if the bot was in a channel and is now alone
-    if (oldState.channelId && oldState.channel.members.size === 1 && oldState.channel.members.has(botMember.id)) {
-        botMember.voice.disconnect();
-        console.log("Im lonely 😔");
-        interaction.reply({content: "Im lonely in the voice channel 😔, Bye-Bye 🥲"})
+    if (oldState.channelId && oldState.channel.members.has(botMember.id) && oldState.channel.members.size === 1) {
+        botMember.voice.disconnect() .then();
+        console.log("Im lonely 😔, bye bye");
+        channel.send('Disconnecting...') .then(msg => client.destroy());
     }
+
 });
 
 client.login(TOKEN)
