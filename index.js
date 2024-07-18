@@ -4,9 +4,9 @@ const { REST } = require("@discordjs/rest")
 const { Routes } = require("discord-api-types/v10")
 const fs = require("fs")
 const { DisTube } = require("distube")
+const { YouTubePlugin } = require("@distube/youtube");
+const { SpotifyPlugin } = require("@distube/spotify");
 const { YtDlpPlugin } = require("@distube/yt-dlp")
-const { VoiceConnectionStatus } = require("@discordjs/voice")
-const { channel } = require("diagnostics_channel")
 // const { Player } = require("discord-player")
 
 dotenv.config()
@@ -63,7 +63,10 @@ const rest = new REST().setToken(TOKEN);
 //SlashCommandHandling ends
 
 client.distube = new DisTube(client, {
-    plugins: [new YtDlpPlugin({ update: true })],
+    plugins: [
+        new YouTubePlugin(), 
+        new SpotifyPlugin(),
+        new YtDlpPlugin({ update: true })]
 });
 
 //client event
@@ -88,9 +91,9 @@ client.on("voiceStateUpdate", (oldState, newState) => {
 
     // Check if the bot was in a channel and is now alone
     if (oldState.channelId && oldState.channel.members.has(botMember.id) && oldState.channel.members.size === 1) {
-        botMember.voice.disconnect() .then();
+        botMember.voice.disconnect();
         console.log("Im lonely 😔, bye bye");
-        channel.send('Disconnecting...') .then(msg => client.destroy());
+        
     }
 
 });
