@@ -5,18 +5,24 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("play")
         .setDescription("Playing Songs!")
-        .addStringOption(option =>
-            option
-                .setName("url")
-                .setDescription("Song Url")
-                .setRequired(false)
-            )
-        .addStringOption(option =>
-            option
-                .setName("keyword")
-                .setDescription("Song Keyword")
-                .setRequired(false)
-        ),
+        .addSubcommand (subcommand =>
+            subcommand
+            .setName("search")
+            .setDescription("search for song")
+            .addStringOption(option =>
+                option
+                    .setName("keyword")
+                    .setDescription("Song Keyword")
+                    .setRequired(true)
+        )
+    ),
+        // ).addStringOption(option =>
+        //     option
+        //         .setName("url")
+        //         .setDescription("Song Url")
+        //         .setRequired(false)
+        //     ),
+        
         
     async execute(client, interaction) {
         const voiceChannel = interaction.member.voice.channel;
@@ -25,8 +31,8 @@ module.exports = {
         }
 
         const keyword = interaction.options.getString("keyword");
-        const url = interaction.options.getString("url");
-        if (!url && !keyword) {
+        // const url = interaction.options.getString("url");
+        if (!keyword) {
             return await interaction.reply({ content: "You need to provide either an URL or a keyword for the song.", ephemeral: true });
         }
 
@@ -38,15 +44,15 @@ module.exports = {
 
         try {
             await interaction.deferReply();
-            const searchQuery = url || keyword;
+            // const searchQuery = keyword;
             const queue = client.distube.getQueue(interaction.guild.id);
             if (queue) {
-                client.distube.play(voiceChannel, searchQuery, {
+                client.distube.play(voiceChannel, keyword, {
                     textChannel: interaction.channel,
                     member: interaction.member,
                 });
             } else {
-                client.distube.play(voiceChannel, searchQuery, {
+                client.distube.play(voiceChannel, keyword, {
                     textChannel: interaction.channel,
                     member: interaction.member,
                 });
