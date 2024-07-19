@@ -58,7 +58,7 @@ module.exports = {
                 });
             }
 
-            await interaction.followUp({ content: `🎶 Playing music: ${searchQuery}` });
+            await interaction.followUp({ content: `🎶 Playing music: ${keyword}` });
         } catch (error) {
             console.error(error);
             await interaction.followUp({ content: "There was an error playing the song.", ephemeral: true });
