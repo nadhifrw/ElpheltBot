@@ -11,7 +11,6 @@ const { YtDlpPlugin } = require("@distube/yt-dlp")
 
 dotenv.config()
 const TOKEN = process.env.TOKEN
-// const guildId = process.env.GUILD_ID
 
 const client = new Client({
     intents: [
@@ -73,16 +72,6 @@ client.distube = new DisTube(client, {
 //client event
 client.once("ready", (c) => {
     console.log(`✅ ${c.user.username} is online`)
-    // if (guildId) {
-    //     const guild = client.guilds.cache.get(guildId);
-    //     if (guild) {
-    //         console.log(`Guild name: ${guild.name}, Guild ID: ${guild.id}`);
-    //     } else {
-    //         console.log(`Guild with ID ${guildId} not found.`);
-    //     }
-    // } else {
-    //     console.log('GUILD_ID is not set in .env file.');
-    // }
 })
 
 client.on("interactionCreate", (interaction) => {
