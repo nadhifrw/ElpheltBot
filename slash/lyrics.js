@@ -13,11 +13,11 @@ module.exports = {
         }
         const currentSong = queue.songs[0];
         const inputTitle = currentSong.name;
-        const songArtist = currentSong.uploader.name;
-        
+        const inputArtist = currentSong.uploader.name;
         // console.log(inputTitle);
         // console.log(songArtist);
         
+        // Renaming for the title to fit for the API
         let songTitle;
         if (inputTitle.includes("-") && inputTitle.includes("(")) {
             songTitle = inputTitle.split('-')[1].split('(')[0].trim();
@@ -28,6 +28,15 @@ module.exports = {
             songTitle = inputTitle;
         }
         // console.log(songTitle);
+
+        //renaming the artist name so it fit for the API
+        let songArtist;
+        if (inputArtist.includes('-')) {
+            songArtist = inputArtist.split('-')[0].trim()
+        } else {
+            songArtist = inputArtist
+        }
+        // console.log(songArtist)
 
         const url = `https://api.lyrics.ovh/v1/${encodeURIComponent(songArtist)}/${encodeURIComponent(songTitle)}`;
         try {
@@ -42,8 +51,9 @@ module.exports = {
             await interaction.reply({ embeds: [queueEmbed], });
             return lyrics ? lyrics : 'No lyrics found for this song.';
         } catch (error) {
-            console.error('Error fetching lyrics:', error);
-            return 'There was an error fetching the lyrics.';
+            await interaction.reply({content: "Could find the lyrics"}) 
+            // console.error('Error fetching lyrics:', error);
+            // return 'There was an error fetching the lyrics.';
         }
     }
 
